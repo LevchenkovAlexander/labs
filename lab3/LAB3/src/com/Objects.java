@@ -7,9 +7,13 @@ public class Objects extends Entity implements NotAlive {
         HUGE ("really big"),
         TINY ("tiny");
 
-        // final private String phrase;
-        Size (final String phrase) {
-            // this.phrase = phrase;
+        final private String size;
+        Size (final String size) {
+            this.size = size;
+        }
+
+        public String getSize () {
+            return size;
         }
     }
 

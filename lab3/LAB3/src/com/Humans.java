@@ -11,8 +11,14 @@ public class Humans extends Entity implements Alive {
         COMFY ("more comfortable"),
         ALIVE (null);
 
+        private final String feel;
+        Feel (final String feel) {
+            this.feel = feel;
+        }
 
-        Feel (final String feel) { }
+        public String getFeel () {
+            return feel;
+        }
     }
 
     Humans (String name) {

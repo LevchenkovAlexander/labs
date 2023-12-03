@@ -1,6 +1,5 @@
 package story;
 
-
 import com.*;
 import com.Humans.Feel;
 import com.Objects.Size;
@@ -34,11 +33,12 @@ public class App {
         System.out.println(plates[5].stand("under the table on Veranda, whatever the f it is"));
 
     
-        System.out.println(mumla.say("I feel more comfortable under the table"));
         mumla.setFeel(Feel.COMFY);
+        System.out.println(mumla.say("I feel " + mumla.getFeel().getFeel() + " under the table"));
 
         plates[5].setSize(Size.TINY);
-        System.out.println(plates[5].hide("in the shadow of " + vase.getName()));
+        System.out.println("The " + plates[5].getName() + " was " + plates[5].getSize().getSize());
+        System.out.println("The " + plates[5].hide("in the shadow of " + vase.getName()));
 
     }
 }
