@@ -17,5 +17,5 @@ public class Agility extends StatusMove{
 
         Effect effect = new Effect().stat(Stat.SPEED, 2);
         p.addEffect(effect);
-    }   
+    }
 }
