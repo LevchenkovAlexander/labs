@@ -1,40 +1,12 @@
 package com;
 
-public class Objects extends Entity implements NotAlive {
+public abstract class Objects extends Entity implements NotAlive {
     
-    public enum Size {
-        NORMAL ("average size"),
-        HUGE ("really big"),
-        TINY ("tiny");
+    
 
-        final private String size;
-        Size (final String size) {
-            this.size = size;
-        }
-
-        public String getSize () {
-            return size;
-        }
-    }
-
-    private Size size;
 
     public Objects (String name) {
         super(name);
-        size = Size.NORMAL;
-    }
-
-    public Objects (String name, Size size) {
-        super(name);
-        this.size = size;
-    }
-
-    public void setSize (Size size) {
-        this.size = size;
-    }
-
-    public Size getSize () {
-        return size;
     }
 
     @Override
@@ -57,12 +29,12 @@ public class Objects extends Entity implements NotAlive {
     }
     
     @Override
-    public String stand (Objects where) {
+    public String stand (Places where) {
         return super.getName() + " stands " + where.getName();
     }
 
     @Override 
-    public String hide (Objects where) {
+    public String hide (Places where) {
         return super.getName() + " hides " + where.getName();
     }
 

@@ -33,11 +33,11 @@ public abstract class Entity {
         state = newState;
     }
 
-    public boolean equals (Object object) {
-        return (super.hashCode() == object.hashCode());
+    public boolean _equals (Entity object) {
+        return (getClass().getName() == object.getClass().getName() && getName() == object.getName());
     }
 
-    public String toString () {
+    public String _toString () {
         return getClass().getName() + " " + getName();
     }
 

@@ -8,15 +8,14 @@ public class Humans extends Entity implements Alive {
     public enum Feel {
 
         OKAY ("okay"),
-        COMFY ("more comfortable"),
-        ALIVE (null);
+        COMFY ("more comfortable");
 
         private final String feel;
         Feel (final String feel) {
             this.feel = feel;
         }
 
-        public String getFeel () {
+        public String getString () {
             return feel;
         }
     }
@@ -36,13 +35,13 @@ public class Humans extends Entity implements Alive {
     public Feel getFeel () {
         return feel;
     }
-    
+
     public String say (String what) {
         return super.getName() + " said: \"" + what + "\"";
     }
 
     public String say (String what, Humans toWho) {
-        return super.getName() + " said " + what + " to " + toWho.getName();
+        return super.getName() + " said to " + toWho.getName() + ": \"" + what + "\"";
     }
 
     @Override
@@ -60,28 +59,28 @@ public class Humans extends Entity implements Alive {
             return "Not holding any items";
         } else if (hold_items.length == 1) {
             return hold_items[0];
-        } 
+        }
         return hold_items[0] + " and " + hold_items[1];
     }
 
     @Override
-    public String take (Objects what, Objects fromWhere) {
+    public String take (Things what, Places fromWhere) {
         return super.getName() + " took " + what.getName() + " from the " + fromWhere.getName(); 
     }
 
     @Override
-    public String put (Objects what, Objects where) {
+    public String put (Things what, Places where) {
         return super.getName() + " put " + what.getName() + " " + where.getName();
     }
 
     @Override
-    public String put (Objects what, Objects where, String prep) {
+    public String put (Things what, Places where, String prep) {
         return super.getName() + " put " + what.getName() + " " + prep + " " + where.getName();
     }
 
     @Override
     public String feels () {
-        return super.getName() + " is feeling " + feel;
+        return super.getName() + " is feeling " + feel.getString();
     } 
 
     @Override

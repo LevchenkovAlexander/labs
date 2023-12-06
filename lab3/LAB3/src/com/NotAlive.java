@@ -10,10 +10,10 @@ public interface NotAlive {
 
     public String stand (String where);
 
-    public String stand (Objects where);
+    public String stand (Places where);
 
     public String hide (String where);
 
-    public String hide (Objects where);
+    public String hide (Places where);
 
 }
