@@ -1,0 +1,9 @@
+Type: ArrayList
+Initialization date: Sun Feb 11 16:15:44 MSK 2024
+Number of elements: 0
+Headers: Id, Name, Coordinates, CreationDate, EnginePower, NumberOfWheels, Type, FuelType
+1, name, 23, 22, Sun Feb 11 17:03:20 MSK 2024, 100, 4, SPACESHIP, ALCOHOL
+2, name, 23, 22, Sun Feb 11 17:03:24 MSK 2024, 100, 4, SPACESHIP, ALCOHOL
+3, name, 23, 22, Sun Feb 11 17:03:28 MSK 2024, 100, 4, SPACESHIP, ALCOHOL
+4, name, 23, 22, Sun Feb 11 17:03:31 MSK 2024, 100, 4, SPACESHIP, ALCOHOL
+5, markIV, 0, 0, Sun Feb 11 23:11:48 MSK 2024, 0, 0, null, null
