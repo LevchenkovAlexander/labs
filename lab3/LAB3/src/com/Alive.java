@@ -12,6 +12,8 @@ public interface Alive {
 
     public String feels ();
 
+    public String eat (Edible what);
+
     public String lookAround ();
 
 

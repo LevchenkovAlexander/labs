@@ -41,4 +41,8 @@ public abstract class Entity {
         return getClass().getName() + " " + getName();
     }
 
+    public int _hashCode () {
+        return hashCode();
+    }
+
 }

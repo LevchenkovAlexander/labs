@@ -88,5 +88,11 @@ public class Humans extends Entity implements Alive {
         return super.getName() + " looked around";
     }
 
+    @Override
+    public String eat (Edible what) {
+        what.beEaten();
+        return super.getName() + " ate " + what;
+    }
+
     
 }
