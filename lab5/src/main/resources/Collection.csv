@@ -1,9 +1,10 @@
 Type: ArrayList
 Initialization date: Mon Feb 12 16:33:49 MSK 2024
-Number of elements: 4
+Number of elements: 6
 Headers: Id, Name, Coordinates, CreationDate, EnginePower, NumberOfWheels, Type, FuelType
 1, markIV, 22, 32, Mon Feb 12 17:16:59 MSK 2024, 400, 5, SPACESHIP, ALCOHOL
 2, markV, 24, 72, Mon Feb 12 17:17:05 MSK 2024, 400, 4, DRONE, KEROSENE
 3, bobo, 20, 20, Tue Feb 13 00:31:00 MSK 2024, 100, 2, MOTORCYCLE, GASOLINE
 4, markVII, 100, 100, Mon Feb 12 17:17:58 MSK 2024, 1000, 0, SPACESHIP, GASOLINE
 5, buble, 0, 0, Mon Feb 12 17:42:56 MSK 2024, 10000, 4, MOTORCYCLE, GASOLINE
+6, bublegum, 0, 0, Tue Feb 13 01:05:52 MSK 2024, 200, 0, DRONE, MANPOWER
