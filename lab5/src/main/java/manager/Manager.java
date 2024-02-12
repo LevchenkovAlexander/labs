@@ -1,6 +1,7 @@
 package manager;
 
 import server.*;
+import server.com.FuelType;
 import server.exceptions.NullValueException;
 
 import java.io.*;
@@ -78,6 +79,17 @@ public final class Manager {
 
                         }
 
+                        if (request.split(" ")[0].strip().equalsIgnoreCase("add_if_min")){
+                            List<String> l = Arrays.stream(request.split(" ")).toList();
+
+                            try {
+                                s1.add_if_min(String.join(" ", l.subList(1, l.size())));
+                                response = "Element added";
+                            } catch (NullValueException e) {
+                                response = "Error: Check inputted data: " + e.getMessage();
+                            }
+                        }
+
                         if (request.split(" ")[0].strip().equalsIgnoreCase("update")) {
                             if (request.split(" ")[1].strip().equalsIgnoreCase("help")) {
                                 response = "id + {name, coordX, coordY, enginePower, numOfWheels, type, fuelType}";
@@ -87,6 +99,24 @@ public final class Manager {
                                 s1.update(l.get(1), String.join(" ", l.subList(2, l.size())));
                                 response = "Updated, i guess...";
                             }
+                        }
+
+                        if (request.split(" ")[0].strip().equalsIgnoreCase("types")){
+
+                            if (request.strip().equalsIgnoreCase("types")) {
+                                response = "FuelTypes:;" + s1.getFuelTypes() + ";VehicleTypes:;" + s1.getVehicleTypes();
+                            }
+                            else if (request.split(" ")[1].strip().equalsIgnoreCase("fuel")){
+                                response = s1.getFuelTypes();
+                            }
+                            else if (request.split(" ")[1].strip().equalsIgnoreCase("vehicle")){
+                                response = s1.getVehicleTypes();
+                            }
+                        }
+
+                        if (request.split(" ")[0].strip().equalsIgnoreCase("insert")){
+                            List<String> l = Arrays.stream(request.split(" ")).toList();
+                            s1.insert(l.get(1), String.join(" ", l.subList(2, l.size())));
                         }
 
                         if (request.split(" ")[0].strip().equalsIgnoreCase("remove")) {

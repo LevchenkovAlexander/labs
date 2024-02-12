@@ -5,6 +5,7 @@ import server.exceptions.NullValueException;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Scanner;
 import java.io.FileWriter;
@@ -120,24 +121,31 @@ public final class Server {
     }
 
     public void add (String str) throws NullValueException {
-        add(new Vehicle(str));
+        add(new Vehicle(str.strip()));
     }
 
-    public void insert_at_index (int index, String element) {
+    public void insert (String index, String str) {
         ArrayList<Vehicle> tmp_list = new ArrayList<>();
-        for (int i = 0; i < list.size() + 1; i ++){
-            if (i == index) {
-                tmp_list.add(new Vehicle(element));
+        Vehicle element = new Vehicle(str);
+        element.setId(index);
+        element.setCreationDate(new Date().toString());
+        int id = Integer.parseInt(index)-1;
+
+        for (int i = 0; i < list.size(); i++) {
+            if (id == (i+1)) {
+                list.add(id, element);
             }
-            else {
-                tmp_list.add(list.get(i));
+            if ((i+1) > id) {
+                Vehicle tmp = list.get(i);
+                tmp.setId(i+1+"");
+                list.set(i, tmp);
             }
-            tmp_list.get(i).setId(i+"");
         }
+
     }
 
     public void update (String id, String str) {
-        Vehicle element = new Vehicle (str);
+        Vehicle element = new Vehicle (str.strip());
         element.setCreationDate(new Date().toString());
         element.setId(id);
         int i = Integer.parseInt(id);
@@ -164,12 +172,19 @@ public final class Server {
             sum += vehicle.getNumberOfWheels();
         }
 
-
         return String.format("%8.2f",(sum/list.size())).replace(',', '.').strip();
     }
 
     public void clear () {
         list.clear();
+    }
+
+    public void add_if_min (String str) throws NullValueException{
+        Vehicle element = new Vehicle(str.strip());
+
+        if (element.countValue() < getMinimal()) {
+            add(element);
+        }
     }
 
     public String getInfo () {
@@ -180,6 +195,17 @@ public final class Server {
         writeFile();
     }
 
+    public String getFuelTypes () {
+        String out = Arrays.toString(FuelType.ALCOHOL.getDeclaringClass().getEnumConstants());
+        return out.substring(1, out.length()-1).replace(", ", ";");
+    }
+
+    public String getVehicleTypes () {
+        String out = Arrays.toString(VehicleType.DRONE.getDeclaringClass().getEnumConstants());
+        return out.substring(1, out.length()-1).replace(", ", ";");
+    }
+
+
     private void list_update(){
         for (int i = 0; i < list.size(); i ++) {
             Vehicle tmp =  list.get(i);
@@ -188,4 +214,16 @@ public final class Server {
             updateInfo();
         }
     }
+
+    private long getMinimal () {
+        long min = list.get(0).countValue();
+        for (int i = 1; i < list.size(); i++) {
+            long tmp = list.get(i).countValue();
+            if (min > tmp) {
+                min = tmp;
+            }
+        }
+        return min;
+    }
+
 }

@@ -142,6 +142,29 @@ public class Vehicle {
         return type;
     }
 
+    public long countValue () {
+        long value = 0;
+
+        Map<FuelType, Integer> fuel = Map.of(
+                FuelType.GASOLINE, 100,
+                FuelType.KEROSENE, 200,
+                FuelType.ALCOHOL, 300,
+                FuelType.MANPOWER, 400
+        );
+
+        Map<VehicleType, Integer> type = Map.of(
+                VehicleType.DRONE, 100,
+                VehicleType.MOTORCYCLE, 200,
+                VehicleType.HOVERBOARD, 300,
+                VehicleType.SPACESHIP, 400
+        );
+
+        value = Math.abs(coordinates.x) + Math.abs(coordinates.y) +
+                enginePower + numberOfWheels + type.get(this.type) + fuel.get(this.fuelType);
+
+        return value;
+    }
+
     @Override
     public String toString() {
         return id.toString() + ", " + name + ", " + coordinates.toString() + ", " + creationDate.toString() +
