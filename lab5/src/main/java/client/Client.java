@@ -16,7 +16,7 @@ public final class Client {
 
             System.out.println("Connected to server");
 
-                Scanner scn = new Scanner(System.in);
+            Scanner scn = new Scanner(System.in);
             while (true) {
                 String request = scn.nextLine();
                 out.write(request);
