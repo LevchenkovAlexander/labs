@@ -1,10 +1,13 @@
 package manager;
 
 import server.*;
+import server.exceptions.NullValueException;
 
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Arrays;
+import java.util.List;
 
 public final class Manager {
     public static void main (String[] args){
@@ -31,19 +34,18 @@ public final class Manager {
                         String response = "";
 
                         response = (request + " poshol nahui");
-                        System.out.println("request handled");
 
 
                         if (request.strip().equalsIgnoreCase("help")) {
                             response = "help: вывести справку";
                         }
 
-                        if (request.strip().equalsIgnoreCase("show")){
-                            response = s1.getCollection();
-                        }
-
                         if (request.strip().equalsIgnoreCase("info")) {
                             response = s1.getInfo();
+                        }
+
+                        if (request.strip().equalsIgnoreCase("show")){
+                            response = s1.getCollection();
                         }
 
                         if (request.strip().equalsIgnoreCase("save")) {
@@ -51,14 +53,9 @@ public final class Manager {
                             response = "Collection saved";
                         }
 
-                        if (request.split(" ")[0].strip().equalsIgnoreCase("update")) {
-                            if (request.split(" ")[1].strip().equalsIgnoreCase("help")) {
-                                response = "id + {name, coordX, coordY, enginePower, numOfWheels, type, fuelType}";
-                            }
-                            else {
-                                s1.update(request.split(" ")[1].strip(), request.split(" ")[2].strip());
-                                response = "Updated, i guess...";
-                            }
+                        if (request.strip().equalsIgnoreCase("clear")) {
+                            s1.clear();
+                            response = "Collection cleared";
                         }
 
                         if (request.split(" ")[0].strip().equalsIgnoreCase("add")) {
@@ -66,13 +63,50 @@ public final class Manager {
                                 response = "{name, coordX, coordY, enginePower, numOfWheels, type, fuelType}";
                             }
                             else {
-                                s1.add(request.split(" ")[1].strip());
-                                response = "Element added";
+                                List<String> l = Arrays.stream(request.split(" ")).toList();
+
+                                try {
+                                    s1.add(String.join(" ", l.subList(1, l.size())));
+                                    response = "Element added";
+                                } catch (NullValueException e) {
+                                    response = "Error: Check inputted data: " + e.getMessage();
+                                }
+
+
                             }
 
 
                         }
 
+                        if (request.split(" ")[0].strip().equalsIgnoreCase("update")) {
+                            if (request.split(" ")[1].strip().equalsIgnoreCase("help")) {
+                                response = "id + {name, coordX, coordY, enginePower, numOfWheels, type, fuelType}";
+                            }
+                            else {
+                                List<String> l = Arrays.stream(request.split(" ")).toList();
+                                s1.update(l.get(1), String.join(" ", l.subList(2, l.size())));
+                                response = "Updated, i guess...";
+                            }
+                        }
+
+                        if (request.split(" ")[0].strip().equalsIgnoreCase("remove")) {
+                            s1.remove(request.split(" ")[1].strip());
+                            response = "Element removed";
+                        }
+
+                        if (request.strip().equalsIgnoreCase("remove_first")) {
+                            s1.remove(1+"");
+                            response = "Element removed";
+                        }
+
+                        if (request.split(" ")[0].strip().equalsIgnoreCase("remove_all_by_number_of_wheels")){
+                            s1.removeByNumberOfWheels(request.split(" ")[1].strip());
+                            response = "Elements removed";
+                        }
+
+                        if (request.strip().equalsIgnoreCase("average_number_of_wheels")) {
+                            response = s1.averageNumberOfWheels();
+                        }
 
                         if (request.strip().equalsIgnoreCase("exit")) {
                             System.out.println("Client finished dialog");

@@ -24,9 +24,11 @@ public final class Client {
                 out.flush();
 
 
-                String response = in.readLine();
+                String response = "";
+                try { response = in.readLine();} catch (NullPointerException e) {response = "";}
                 if (response.contains(";")) {
-                    response = response.replace(";", "\n");
+                    response = response.replace(";", "\n").strip();
+
                 }
                 System.out.println(response);
 

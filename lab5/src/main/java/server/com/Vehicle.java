@@ -2,7 +2,6 @@ package server.com;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.Date;
 import java.util.Map;
 
 public class Vehicle {
@@ -66,12 +65,8 @@ public class Vehicle {
                 Method method = this.getClass().getMethod("set" + keys.get(i), String.class);
                 try {
                     method.invoke(this, s[i]);
-                } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-                    e.printStackTrace();
-                }
-            } catch (NoSuchMethodException e) {
-                e.printStackTrace();
-            }
+                } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException ignore) { }
+            } catch (NoSuchMethodException ignore) { }
 
         }
     }
@@ -79,6 +74,7 @@ public class Vehicle {
     public void setId (String id) {
         this.id = Integer.valueOf(id);
     }
+
     public void setName(String name) {
         this.name = name;
     }
@@ -109,6 +105,41 @@ public class Vehicle {
 
     public void setCreationDate (String date) {
         creationDate = date;
+    }
+
+    public Integer getId () {
+        return id;
+    }
+    public String getName () {
+        return name;
+    }
+
+    public int getCoordX () {
+        return coordinates.x;
+    }
+
+    public int getCoordY () {
+        return coordinates.y;
+    }
+
+    public int getEnginePower() {
+        return enginePower;
+    }
+
+    public FuelType getFuelType() {
+        return fuelType;
+    }
+
+    public long getNumberOfWheels() {
+        return numberOfWheels;
+    }
+
+    public String getCreationDate() {
+        return creationDate;
+    }
+
+    public VehicleType getType () {
+        return type;
     }
 
     @Override
