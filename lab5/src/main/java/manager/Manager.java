@@ -46,7 +46,11 @@ public final class Manager {
                             break;
                         }
 
-                        response = s1.connect(request);
+                        try {
+                            response = s1.connect(request);
+                        } catch (NumberFormatException e) {
+                            response = e.getMessage();
+                        }
 
                         out.write(response);
                         out.newLine();
@@ -54,7 +58,6 @@ public final class Manager {
                     }
                 } catch (IOException e) {
                     System.out.println("Connection Error: User Disconnected");
-//                    e.printStackTrace();
                 }
 
             }

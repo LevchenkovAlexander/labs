@@ -5,6 +5,7 @@ import server.exceptions.NullValueException;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.io.FileWriter;
 import java.io.File;
@@ -52,6 +53,25 @@ public final class Server {
             response = "Collection cleared";
         }
 
+        if (request.split(" ")[0].strip().equalsIgnoreCase("execute_script")) {
+            File script = new File(request.split(" ")[1].strip());
+            try {
+                Scanner sc = new Scanner(script);
+                String commands_str = "";
+                while (sc.hasNextLine()) {
+                    commands_str += sc.nextLine().strip();
+                }
+                List<String> commands = List.of(commands_str.split("\n"));
+                for (String command: commands) {
+                    response += connect(command)+";";
+                }
+
+            } catch (FileNotFoundException | NullPointerException e) {
+                response = "Error: file not found";
+            }
+
+        }
+
         if (request.split(" ")[0].strip().equalsIgnoreCase("add")) {
             if (request.split(" ")[1].strip().equalsIgnoreCase("help")) {
                 response = "{name, coordX, coordY, enginePower, numOfWheels, type, fuelType}";
@@ -89,8 +109,12 @@ public final class Server {
             }
             else {
                 List<String> l = Arrays.stream(request.split(" ")).toList();
-                update(l.get(1), String.join(" ", l.subList(2, l.size())));
-                response = "Updated, i guess...";
+                try {
+                    update(l.get(1), String.join(" ", l.subList(2, l.size())));
+                    response = "Element updated";
+                } catch (NullValueException e) {
+                    response = e.getMessage();
+                }
             }
         }
 
@@ -109,7 +133,12 @@ public final class Server {
 
         if (request.split(" ")[0].strip().equalsIgnoreCase("insert")){
             List<String> l = Arrays.stream(request.split(" ")).toList();
-            insert(l.get(1), String.join(" ", l.subList(2, l.size())));
+            try {
+                insert(l.get(1), String.join(" ", l.subList(2, l.size())));
+                response = "Element inserted";
+            } catch (NullValueException e) {
+                response = e.getMessage();
+            }
         }
 
         if (request.split(" ")[0].strip().equalsIgnoreCase("remove")) {
@@ -226,13 +255,20 @@ public final class Server {
         updateInfo();
     }
 
-    private void add (String str) throws NullValueException {
-        add(new Vehicle(str.strip()));
+    private void add (String str) throws NullValueException, NumberFormatException {
+        Vehicle element = new Vehicle(str);
+        add(element);
     }
 
-    private void insert (String index, String str) {
+    private void insert (String index, String str) throws NullValueException, NumberFormatException {
         ArrayList<Vehicle> tmp_list = new ArrayList<>();
         Vehicle element = new Vehicle(str);
+        if (element.getType() == null) {
+            throw new NullValueException("VehicleType");
+        }
+        if (element.getFuelType() == null) {
+            throw new NullValueException("FuelType");
+        }
         element.setId(index);
         element.setCreationDate(new Date().toString());
         int id = Integer.parseInt(index)-1;
@@ -250,8 +286,23 @@ public final class Server {
         updateInfo();
     }
 
-    private void update (String id, String str) {
+    private void add_if_min (String str) throws NullValueException, NumberFormatException {
+        Vehicle element = new Vehicle(str.strip());
+
+        if (element.countValue() < getMinimal()) {
+            add(element);
+            updateInfo();
+        }
+    }
+
+    private void update (String id, String str) throws NullValueException, NumberFormatException {
         Vehicle element = new Vehicle (str.strip());
+        if (element.getType() == null) {
+            throw new NullValueException("VehicleType");
+        }
+        if (element.getFuelType() == null) {
+            throw new NullValueException("FuelType");
+        }
         element.setCreationDate(new Date().toString());
         element.setId(id);
         int i = Integer.parseInt(id);
@@ -286,15 +337,6 @@ public final class Server {
     private void clear () {
         list.clear();
         updateInfo();
-    }
-
-    private void add_if_min (String str) throws NullValueException{
-        Vehicle element = new Vehicle(str.strip());
-
-        if (element.countValue() < getMinimal()) {
-            add(element);
-            updateInfo();
-        }
     }
 
     private String getInfo () {

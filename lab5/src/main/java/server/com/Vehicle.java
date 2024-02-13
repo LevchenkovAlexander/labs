@@ -1,7 +1,10 @@
 package server.com;
 
+import server.exceptions.NullValueException;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.List;
 import java.util.Map;
 
 public class Vehicle {
@@ -28,7 +31,7 @@ public class Vehicle {
         this.fuelType = fuelType;
     }
 
-    public Vehicle(String string) {
+    public Vehicle(String string) throws NumberFormatException {
         Map<Integer, String> keys;
         if (string.charAt(0) == '{') {
             string = string.substring(1, string.length() - 1);
@@ -59,14 +62,20 @@ public class Vehicle {
         String[] s = string.split(", ");
 
         coordinates = new Coordinates();
+        List<String> requires_number = List.of("CoordX", "CoordY", "EnginePower", "NumOfWheels");
 
         for (int i = 0; i < s.length; i++) {
+            if (requires_number.contains(keys.get(i))) {
+                try {
+                    Integer.parseInt(s[i]);
+                } catch (NumberFormatException e) {
+                    throw new NumberFormatException(keys.get(i) + " requires a number: " + s[i] + " is not a number");
+                }
+            }
             try {
                 Method method = this.getClass().getMethod("set" + keys.get(i), String.class);
-                try {
-                    method.invoke(this, s[i]);
-                } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException ignore) { }
-            } catch (NoSuchMethodException ignore) { }
+                method.invoke(this, s[i]);
+            } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException ignore) { }
 
         }
     }
