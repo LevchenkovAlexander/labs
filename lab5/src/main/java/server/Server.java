@@ -10,9 +10,7 @@ import java.util.*;
 import java.io.FileWriter;
 import java.io.File;
 
-// пофиксить необновляемое количество элементов в info
-//  + FUEL и VEHICLE TYPE (не добавляются через add)
-// в принципе add косячно работает (добавить проверки на количество введеных элементов)
+// SCRIPT NOT TESTED
 
 public final class Server {
     private File collection;
