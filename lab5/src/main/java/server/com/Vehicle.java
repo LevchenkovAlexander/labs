@@ -33,8 +33,9 @@ public class Vehicle {
 
     public Vehicle(String string) throws NumberFormatException {
         Map<Integer, String> keys;
-        if (string.charAt(0) == '{') {
-            string = string.substring(1, string.length() - 1);
+        String[] s;
+        if (string.contains(";")) {
+            s = string.split(";");
             keys = Map.of(
                     0, "Name",
                     1, "CoordX",
@@ -46,6 +47,7 @@ public class Vehicle {
             );
         }
         else{
+            s = string.split(", ");
             keys = Map.of(
                     0, "Id",
                     1, "Name",
@@ -59,7 +61,6 @@ public class Vehicle {
             );
         }
 
-        String[] s = string.split(", ");
 
         coordinates = new Coordinates();
         List<String> requires_number = List.of("CoordX", "CoordY", "EnginePower", "NumOfWheels");

@@ -5,6 +5,7 @@ import server.exceptions.NullValueException;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.io.FileWriter;
@@ -29,27 +30,58 @@ public final class Server {
         response = (request + " poshol nahui");
 
 
-        if (request.strip().equalsIgnoreCase("help")) {
+        if (request.equals("help")) {
             response = "help: вывести справку";
         }
 
-        if (request.strip().equalsIgnoreCase("info")) {
+        if (request.equals("info")) {
             response = getInfo();
         }
 
-        if (request.strip().equalsIgnoreCase("show")){
+        if (request.equals("show")){
             response = getCollection();
         }
 
-        if (request.strip().equalsIgnoreCase("save")) {
+        if (request.equals("save")) {
             save();
             response = "Collection saved";
         }
 
-        if (request.strip().equalsIgnoreCase("clear")) {
+        if (request.equals("clear")) {
             clear();
             response = "Collection cleared";
         }
+
+        if (request.split(" ")[0].equals("add")) {
+            if (request.split(" ").length == 1) {
+                response = "";
+                for (Field field : Vehicle.class.getDeclaredFields()) {
+                    String name = field.getName();
+                    if (name.equals("id") || name.equals("creationDate")) {
+                    } else {
+                        if (name.equals("coordinates")) {
+                            response += "coordinate X" + ";" + "coordinate Y" + ";";
+                        } else {
+                            response += name + ";";
+                        }
+
+                    }
+                }
+            }
+            else {
+                try {
+                    add (new Vehicle(request.split(" ")[1]));
+                    response = "Element added";
+                }   catch (NullValueException | NullPointerException | NumberFormatException e) {
+                    response = "Error: " + e.getMessage();
+                }
+            }
+//            for (int i = 0; i < list.size(); i++) {
+//                System.out.println(list.get(i).toString());
+//            }
+        }
+
+
 
         if (request.split(" ")[0].strip().equalsIgnoreCase("execute_script")) {
             File script = new File(request.split(" ")[1].strip());
@@ -61,7 +93,7 @@ public final class Server {
                 }
                 List<String> commands = List.of(commands_str.split("\n"));
                 for (String command: commands) {
-                    response += connect(command)+";";
+                    response += connect(command)+"/n";
                 }
 
             } catch (FileNotFoundException | NullPointerException e) {
@@ -70,84 +102,7 @@ public final class Server {
 
         }
 
-        if (request.split(" ")[0].strip().equalsIgnoreCase("add")) {
-            if (request.split(" ")[1].strip().equalsIgnoreCase("help")) {
-                response = "{name, coordX, coordY, enginePower, numOfWheels, type, fuelType}";
-            }
-            else {
-                List<String> l = Arrays.stream(request.split(" ")).toList();
 
-                try {
-                    add(String.join(" ", l.subList(1, l.size())));
-                    response = "Element added";
-                } catch (NullValueException e) {
-                    response = "Error: Check inputted data: " + e.getMessage();
-                }
-
-
-            }
-
-
-        }
-
-        if (request.split(" ")[0].strip().equalsIgnoreCase("add_if_min")){
-            List<String> l = Arrays.stream(request.split(" ")).toList();
-
-            try {
-                add_if_min(String.join(" ", l.subList(1, l.size())));
-                response = "Element added";
-            } catch (NullValueException e) {
-                response = "Error: Check inputted data: " + e.getMessage();
-            }
-        }
-
-        if (request.split(" ")[0].strip().equalsIgnoreCase("update")) {
-            if (request.split(" ")[1].strip().equalsIgnoreCase("help")) {
-                response = "id + {name, coordX, coordY, enginePower, numOfWheels, type, fuelType}";
-            }
-            else {
-                List<String> l = Arrays.stream(request.split(" ")).toList();
-                try {
-                    update(l.get(1), String.join(" ", l.subList(2, l.size())));
-                    response = "Element updated";
-                } catch (NullValueException e) {
-                    response = e.getMessage();
-                }
-            }
-        }
-
-        if (request.split(" ")[0].strip().equalsIgnoreCase("types")){
-
-            if (request.strip().equalsIgnoreCase("types")) {
-                response = "FuelTypes:;" + getFuelTypes() + ";VehicleTypes:;" + getVehicleTypes();
-            }
-            else if (request.split(" ")[1].strip().equalsIgnoreCase("fuel")){
-                response = getFuelTypes();
-            }
-            else if (request.split(" ")[1].strip().equalsIgnoreCase("vehicle")){
-                response = getVehicleTypes();
-            }
-        }
-
-        if (request.split(" ")[0].strip().equalsIgnoreCase("insert")){
-            List<String> l = Arrays.stream(request.split(" ")).toList();
-            try {
-                insert(l.get(1), String.join(" ", l.subList(2, l.size())));
-                response = "Element inserted";
-            } catch (NullValueException e) {
-                response = e.getMessage();
-            }
-        }
-
-        if (request.split(" ")[0].strip().equalsIgnoreCase("remove")) {
-            remove(request.split(" ")[1].strip());
-            response = "Element removed";
-        }
-
-        if (request.strip().equalsIgnoreCase("remove_first")) {
-            remove(1+"");
-            response = "Element removed";
-        }
 
         if (request.split(" ")[0].strip().equalsIgnoreCase("remove_all_by_number_of_wheels")){
             removeByNumberOfWheels(request.split(" ")[1].strip());
@@ -182,25 +137,25 @@ public final class Server {
 
             String input;
             int i = 0;
-
-            while (in.hasNextLine()) {
+            while (in.hasNextLine()){
                 i ++;
-
                 input = in.nextLine();
-                if (input.isEmpty()) {
-                    info = createInfo();
-                }
 
-                else if (i > 0 && i < 5) {
-                    if (input.split(": ")[0].strip().equalsIgnoreCase("Initialization date")){
-                        creationDate = input.split(": ")[1];
+                if (i < 4) {
+                    if (i == 2) {
+                        creationDate = input.split(":")[1].strip();
+                        if (creationDate.equals("null")) {
+                            creationDate = new Date().toString();
+                            input = "Initialization date: " + creationDate;
+                        }
                     }
-                    info += input + "\n";
+                    info += input+"\n";
                 }
-                else {
+                else{
                     list.add(new Vehicle(input));
                 }
             }
+
             in.close();
         }
         catch (FileNotFoundException e) {
@@ -236,10 +191,6 @@ public final class Server {
         return listString;
     }
 
-    private String getCollection () {
-        return listToString().replace("\n", ";");
-    }
-
     private void add (Vehicle element) throws NullValueException {
         element.setId("" + (list.size()+1));
         element.setCreationDate((new Date()).toString());
@@ -251,11 +202,6 @@ public final class Server {
         }
         list.add(element);
         updateInfo();
-    }
-
-    private void add (String str) throws NullValueException, NumberFormatException {
-        Vehicle element = new Vehicle(str);
-        add(element);
     }
 
     private void insert (String index, String str) throws NullValueException, NumberFormatException {
@@ -338,7 +284,7 @@ public final class Server {
     }
 
     private String getInfo () {
-        return info.replace("\n", ";");
+        return info.replace("\n", "/n");
     }
 
     private void save () {
@@ -347,12 +293,16 @@ public final class Server {
 
     private String getFuelTypes () {
         String out = Arrays.toString(FuelType.ALCOHOL.getDeclaringClass().getEnumConstants());
-        return out.substring(1, out.length()-1).replace(", ", ";");
+        return out.substring(1, out.length()-1).replace(", ", "/n");
     }
 
     private String getVehicleTypes () {
         String out = Arrays.toString(VehicleType.DRONE.getDeclaringClass().getEnumConstants());
-        return out.substring(1, out.length()-1).replace(", ", ";");
+        return out.substring(1, out.length()-1).replace(", ", "/n");
+    }
+
+    private String getCollection () {
+        return listToString().replace("\n", "/n");
     }
 
 
