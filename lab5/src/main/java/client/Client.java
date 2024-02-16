@@ -7,6 +7,9 @@ import java.net.Socket;
 import java.sql.PreparedStatement;
 import java.util.Scanner;
 
+/**
+ * Console application that interacts with user and sends request to Manager
+ */
 public final class Client {
     public static void main(String[] args) {
 

@@ -6,8 +6,10 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
+/**
+ * Class for containing vehicle
+ */
 public class Vehicle implements Comparable <Vehicle>{
     private Integer id;
     private String name;
@@ -18,20 +20,13 @@ public class Vehicle implements Comparable <Vehicle>{
     private VehicleType type;
     private FuelType fuelType;
 
-    public Vehicle() { }
-
-    public Vehicle(Integer id, String name, Coordinates coordinates, String creationDate, int enginePower,
-                   long numberOfWheels, VehicleType type, FuelType fuelType) {
-        this.id = id;
-        this.name = name;
-        this.coordinates = coordinates;
-        this.creationDate = creationDate;
-        this.enginePower = enginePower;
-        this.numberOfWheels = numberOfWheels;
-        this.type = type;
-        this.fuelType = fuelType;
-    }
-
+    /**
+     * Constructor, creates vehicle from 2 types of stings: one comes from file and is delimited by ", " and the other
+     * comes from user and is delimited by ";"
+     * @param string String representation of vehicle
+     * @throws NumberFormatException
+     * @throws NullValueException
+     */
     public Vehicle(String string) throws NumberFormatException, NullValueException {
         Map<Integer, String> keys;
         String[] s;

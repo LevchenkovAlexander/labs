@@ -10,8 +10,11 @@ import java.net.Socket;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * Class for establishing connection between Client and Server
+ */
 public final class Manager {
-    private Server s1;
+    private final Server s1;
     public Manager () {
         s1 = new Server();
     }
@@ -70,6 +73,12 @@ public final class Manager {
 //        }
 //
 //    }
+
+    /**
+     * Method for connecting to Server
+     * @param request User request
+     * @return Server response
+     */
     public String connect (String request) {
         String response="";
         response = s1.connect(request);
