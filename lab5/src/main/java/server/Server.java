@@ -62,7 +62,7 @@ public final class Server {
         return response;
     }
 
-        Map<String, Command> comms = new HashMap<String, Command>() {{
+        Map<String, Command> comms = new HashMap<>() {{
             put("help", new Command() {
                 @Override
                 public String help() {
