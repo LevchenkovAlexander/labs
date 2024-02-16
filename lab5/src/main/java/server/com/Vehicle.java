@@ -6,8 +6,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
-public class Vehicle {
+public class Vehicle implements Comparable <Vehicle>{
     private Integer id;
     private String name;
     private Coordinates coordinates;
@@ -31,7 +32,7 @@ public class Vehicle {
         this.fuelType = fuelType;
     }
 
-    public Vehicle(String string) throws NumberFormatException {
+    public Vehicle(String string) throws NumberFormatException, NullValueException {
         Map<Integer, String> keys;
         String[] s;
         if (string.contains(";")) {
@@ -45,8 +46,7 @@ public class Vehicle {
                     5, "Type",
                     6, "FuelType"
             );
-        }
-        else{
+        } else {
             s = string.split(", ");
             keys = Map.of(
                     0, "Id",
@@ -76,46 +76,84 @@ public class Vehicle {
             try {
                 Method method = this.getClass().getMethod("set" + keys.get(i), String.class);
                 method.invoke(this, s[i]);
-            } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException ignore) { }
+
+            } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+                if (e.getCause() instanceof NullValueException || e.getCause() instanceof IllegalArgumentException) {
+                    throw new NullValueException(e.getCause().getMessage());
+                }
+            }
 
         }
     }
 
-    public void setId (String id) {
+    public void setId (String id) throws NullValueException{
+        if (id.equals("null")) {
+            throw new NullValueException("Id cannot be null");
+        }
         this.id = Integer.valueOf(id);
     }
 
-    public void setName(String name) {
+    public void setName(String name) throws NullValueException {
+        if (name.equals("null")){
+            throw new NullValueException("Name cannot be null");
+        }
         this.name = name;
     }
 
-    public void setCoordX(String x) {
+    public void setCoordX(String x) throws NullValueException {
+        if (x.equals("null")) {
+            throw new NullValueException("Coordinate x cannot be null");
+        }
         coordinates.setX(Integer.parseInt(x));
     }
 
-    public void setCoordY(String y) {
+    public void setCoordY(String y) throws NullValueException{
+        if (y.equals("null")) {
+            throw new NullValueException("Coordinate y cannot be null");
+        }
         coordinates.setY(Integer.parseInt(y));
     }
 
-    public void setEnginePower(String power) {
-        this.enginePower = Integer.parseInt(power);
-    }
-
-    public void setNumOfWheels(String numOfWheels) {
-        this.numberOfWheels = Long.parseLong(numOfWheels);
-    }
-
-    public void setType(String type) {
-        this.type = VehicleType.valueOf(type);
-    }
-
-    public void setFuelType(String fuelType) {
-        this.fuelType = FuelType.valueOf(fuelType);
-    }
-
-    public void setCreationDate (String date) {
+    public void setCreationDate (String date) throws NullValueException {
+        if (date.equals("null")) {
+            throw new NullValueException("Date cannot be null");
+        }
         creationDate = date;
     }
+    public void setEnginePower(String power) throws NullValueException {
+        int pow = Integer.parseInt(power);
+        if (pow <= 0) {
+            throw new NullValueException("Engine power must be greater than 0");
+        }
+        this.enginePower = pow;
+    }
+
+    public void setNumOfWheels(String numOfWheels) throws NullValueException {
+        long num =Long.parseLong(numOfWheels);
+        if (num <= 0) {
+            throw new NullValueException("Number of wheels must be greater than 0");
+        }
+        this.numberOfWheels = num;
+    }
+
+    public void setType(String type) throws IllegalArgumentException {
+        try {
+            this.type = VehicleType.valueOf(type.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            throw  new IllegalArgumentException("Unknown vehicle type");
+        }
+
+    }
+
+    public void setFuelType(String fuelType) throws IllegalArgumentException{
+        try {
+            this.fuelType = FuelType.valueOf(fuelType.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            throw  new IllegalArgumentException("Unknown fuel type");
+        }
+
+    }
+
 
     public Integer getId () {
         return id;
@@ -177,7 +215,17 @@ public class Vehicle {
 
     @Override
     public String toString() {
-        return id.toString() + ", " + name + ", " + coordinates.toString() + ", " + creationDate.toString() +
+        return id.toString() + ", " + name + ", " + coordinates.toString() + ", " + creationDate +
                 ", " + enginePower + ", " + numberOfWheels + ", " + type + ", " + fuelType;
+    }
+
+    public boolean equals(Vehicle vehicle) {
+        return this.countValue() == vehicle.countValue();
+    }
+
+    @Override
+    public int compareTo(Vehicle vehicle) {
+        return Long.compare(this.countValue(), vehicle.countValue());
+
     }
 }

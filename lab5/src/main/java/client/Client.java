@@ -63,18 +63,19 @@ public final class Client {
                 response = response.replace("/n", "\n").strip();
             }
             if (response.contains(";")) {
-                String[] fields = response.split(";");
-                String lower_request = "add ";
+                String[] fields = response.split(" ")[1].split(";");
+                StringBuilder lower_request = new StringBuilder(response.split(" ")[0]).append(" ");
                 for (int i = 0; i < fields.length; i ++ ) {
                     System.out.println("Input " + fields[i]);
-                    lower_request += in.nextLine();
-                    if (i!=fields.length-1) {
-                        lower_request += ";";
+                    lower_request.append(in.nextLine());
+                    if (fields[i].equals("id")) {
+                        lower_request.append(" ");
+                    }else if (i!=fields.length-1) {
+                            lower_request.append(";");
                     }
                 }
-                response = m.connect(lower_request);
+                response = m.connect(lower_request.toString());
             }
-
             System.out.println(response);
         }
 
