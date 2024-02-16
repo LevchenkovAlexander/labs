@@ -62,7 +62,7 @@ public final class Server {
         return response;
     }
 
-        Map<String, Command> comms = new HashMap<>() {
+        Map<String, Command> comms = new LinkedHashMap<>() {
             @Override
             public Command get(Object key) {
 
@@ -528,7 +528,6 @@ public final class Server {
                             return null;
                         }
                     });
-
                     put("remove_all_by_number_of_wheels", new Command() {
                         @Override
                         public String help() {
@@ -596,7 +595,7 @@ public final class Server {
                     put("print_field_descending_fuel_type", new Command() {
                         @Override
                         public String help() {
-                            return "print_field_descending_fuel_type: вывести значения поля fuelType всех элементов в порядке убывания";
+                            return "print_field_descending_fuel_type: display the fuelType field values of all elements in descending order";
                         }
 
                         @Override
