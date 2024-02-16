@@ -96,7 +96,7 @@ public final class Server {
                     put("help", new Command() {
                         @Override
                         public String help() {
-                            return "help: вывести справку по доступным командам";
+                            return "help: display help on available commands";
                         }
 
                         @Override
@@ -122,7 +122,7 @@ public final class Server {
                     put("info", new Command() {
                         @Override
                         public String help() {
-                            return "info: вывести информацию о коллекции";
+                            return "info: display information about the collection";
                         }
 
                         @Override
@@ -147,7 +147,7 @@ public final class Server {
                     put("show", new Command() {
                         @Override
                         public String help() {
-                            return "show: вывести все элементы коллекции";
+                            return "show: display all elements of a collection";
                         }
 
                         @Override
@@ -177,7 +177,7 @@ public final class Server {
                     put("add", new Command() {
                         @Override
                         public String help() {
-                            return "add {element}: добавить новый элемент в коллекцию";
+                            return "add {element}: add a new element to the collection";
                         }
 
                         @Override
@@ -227,7 +227,7 @@ public final class Server {
                     put("update", new Command() {
                         @Override
                         public String help() {
-                            return "update id {element}: обновить значение элемента коллекции, id которого равен заданному";
+                            return "update id {element}: update the value of a collection element whose id is equal to a given one";
                         }
 
                         @Override
@@ -274,7 +274,7 @@ public final class Server {
                     put("remove", new Command() {
                         @Override
                         public String help() {
-                            return "remove id: удалить элемент из коллекции по его id";
+                            return "remove id: remove an element from a collection by its id";
                         }
 
                         @Override
@@ -301,7 +301,7 @@ public final class Server {
                     put("clear", new Command() {
                         @Override
                         public String help() {
-                            return "clear: очистить коллекцию";
+                            return "clear: clear the collection";
                         }
 
                         @Override
@@ -328,7 +328,7 @@ public final class Server {
                     put("save", new Command() {
                         @Override
                         public String help() {
-                            return "save: сохранить коллекцию";
+                            return "save: save the collection";
                         }
 
                         @Override
@@ -363,7 +363,7 @@ public final class Server {
                     put("execute_script", new Command() {
                         @Override
                         public String help() {
-                            return "execute_script file_name: считать и исполнить скрипт из указанного файла";
+                            return "execute_script file_name: read and execute the script from the specified file";
                         }
 
                         @Override
@@ -404,7 +404,7 @@ public final class Server {
                     put("exit", new Command() {
                         @Override
                         public String help() {
-                            return "exit: завершить программу (без сохранения)";
+                            return "exit: end the program (without saving)";
                         }
 
                         @Override
@@ -429,7 +429,7 @@ public final class Server {
                     put("insert", new Command() {
                         @Override
                         public String help() {
-                            return "insert index {element}: добавить элемент в заданную позицию";
+                            return "insert index {element}: add an element at a given position";
                         }
 
                         @Override
@@ -479,7 +479,7 @@ public final class Server {
                     put("remove_first", new Command() {
                         @Override
                         public String help() {
-                            return "remove_first: удалить первый элемент из коллекции";
+                            return "remove_first: remove the first element from the collection";
                         }
 
                         @Override
@@ -504,7 +504,7 @@ public final class Server {
 
                         @Override
                         public String help() {
-                            return "add_if_min {element}: добавить новый элемент в коллекцию, если его значение меньше, чем у наименьшего элемента этой коллекции";
+                            return "add_if_min {element}: add a new element to a collection if its value is less than the smallest element of this collection";
                         }
 
                         @Override
@@ -532,7 +532,7 @@ public final class Server {
                     put("remove_all_by_number_of_wheels", new Command() {
                         @Override
                         public String help() {
-                            return "remove_all_by_number_of_wheels numberOfWheels: удалить из коллекции все элементы, значения поля numberOfWheels которого эквивалентно заданному";
+                            return "remove_all_by_number_of_wheels numberOfWheels: remove from the collection all elements whose numberOfWheels field value is equivalent to the specified one";
                         }
 
                         @Override
@@ -567,7 +567,7 @@ public final class Server {
                     put("average_of_number_of_wheels", new Command() {
                         @Override
                         public String help() {
-                            return "average_of_number_of_wheels: вывести среднее значение поля numberOfWheels для всех элементов коллекции";
+                            return "average_of_number_of_wheels: display the average value of the numberOfWheels field for all elements of the collection";
                         }
 
                         @Override
@@ -627,8 +627,6 @@ public final class Server {
                             return null;
                         }
                     });
-
-
                 }
 
         };
