@@ -48,10 +48,11 @@ public final class Client {
 //        }
 
         Manager m = new Manager();
-        Scanner in = new Scanner(System.in);
         System.out.println("Connected");
+        Scanner in = new Scanner(System.in);
         while (true) {
             String request = in.nextLine().strip().toLowerCase();
+
             String response = m.connect(request).strip();
 
             if (request.equals("exit")) {
