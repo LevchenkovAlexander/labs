@@ -49,6 +49,7 @@ public final class Client {
 
         Manager m = new Manager();
         Scanner in = new Scanner(System.in);
+        System.out.println("Connected");
         while (true) {
             String request = in.nextLine().strip().toLowerCase();
             String response = m.connect(request).strip();
