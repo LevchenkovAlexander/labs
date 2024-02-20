@@ -1,6 +1,8 @@
+Information:
 Type: ArrayList
 Initialization date: Fri Feb 16 19:52:16 MSK 2024
 Number of elements: 5
+Collection:
 1, markIV, 22, 32, Mon Feb 12 17:16:59 MSK 2024, 400, 5, SPACESHIP, ALCOHOL
 2, markV, 24, 72, Mon Feb 12 17:17:05 MSK 2024, 400, 4, DRONE, KEROSENE
 3, kiko, 332, 303, Fri Feb 16 20:30:32 MSK 2024, 4000, 4, SPACESHIP, ALCOHOL

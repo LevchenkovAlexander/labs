@@ -1,10 +1,12 @@
 package client;
 
+import common.StrToV;
+import common.Validator;
 import manager.Manager;
+import common.Request;
+import server.com.Vehicle;
 
-import java.io.*;
-import java.net.Socket;
-import java.sql.PreparedStatement;
+import java.lang.reflect.Field;
 import java.util.Scanner;
 
 /**
@@ -40,7 +42,7 @@ public final class Client {
 //
 //                if (request.strip().equalsIgnoreCase("exit")) {
 //                    scn.close();
-//                    System.out.println("Exiting programm");
+//                    System.out.println("Exiting program");
 //                    break;
 //                }
 //
@@ -53,35 +55,58 @@ public final class Client {
         Manager m = new Manager();
         System.out.println("Connected");
         Scanner in = new Scanner(System.in);
+
+
         while (true) {
-            String request = in.nextLine().strip().toLowerCase();
-
-            String response = m.connect(request).strip();
-
-            if (request.equals("exit")) {
-                in.close();
-                System.out.println("Exiting program");
-                break;
+            String input = in.nextLine().strip().toLowerCase();
+            String response = "";
+            Request request = new Request(input);
+            try {
+                if (Validator.isValid(request)) {
+                    response = m.connect(request);
+                }
+            } catch (IllegalArgumentException e) {
+                response = e.getMessage();
             }
 
             if (response.contains("/n")) {
-                response = response.replace("/n", "\n").strip();
+                response = response.replace("/n", "\n");
             }
+
             if (response.contains(";")) {
-                String[] fields = response.split(" ")[1].split(";");
-                StringBuilder lower_request = new StringBuilder(response.split(" ")[0]).append(" ");
-                for (int i = 0; i < fields.length; i ++ ) {
-                    System.out.println("Input " + fields[i]);
-                    lower_request.append(in.nextLine());
-                    if (fields[i].equals("id")) {
-                        lower_request.append(" ");
-                    }else if (i!=fields.length-1) {
-                            lower_request.append(";");
+                Request low_req = new Request(request.getCommand());
+                StringBuilder vehicle = new StringBuilder();
+                Field[] fields = Vehicle.class.getDeclaredFields();
+                for (int i = 0; i < fields.length; i ++) {
+                    Field field = fields[i];
+                    if (field.getName().strip().equals("last_id")) {
+                        continue;
+                    }
+                    System.out.println("Input " + field.getName());
+                    String param = in.nextLine().strip();
+                    if (param.isEmpty()) {
+                        System.out.println("This parameter cannot be null");
+                    }
+                    try {
+                        if (Validator.isValid(field.getName(), param)) {
+                            if (field.getName().equals("id")) {
+                                request.setArg(Integer.parseInt(param));
+                            } else vehicle.append(param);
+                        }
+                    } catch (IllegalArgumentException e) {
+                        System.out.println(e.getMessage());
+                        i --;
                     }
                 }
-                response = m.connect(lower_request.toString());
+                request.setVehicle(StrToV.exec(vehicle.toString()));
+                response = m.connect(request);
             }
-            System.out.println(response);
+
+
+            System.out.println(response.strip());
+            if (input.equals("exit")) {
+                break;
+            }
         }
 
     }
