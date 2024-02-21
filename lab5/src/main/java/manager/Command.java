@@ -1,4 +1,6 @@
-package common;
+package manager;
+
+import common.Request;
 
 /**
  * Interface for creates command

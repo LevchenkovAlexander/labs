@@ -1,7 +1,7 @@
 package server;
 
 import common.StrToV;
-import server.com.*;
+import common.Vehicle;
 
 import java.io.*;
 import java.util.*;
@@ -38,16 +38,20 @@ public final class Server {
                 String input = scn.nextLine();
                 if (input.strip().equalsIgnoreCase("information:")) {
                     coll = false;
+                    input = scn.nextLine();
                 }
                 if (input.strip().equalsIgnoreCase("collection:")) {
                     coll = true;
                     input = scn.nextLine();
                 }
                 if (!coll) {
-                    inf.append(input);
+                    inf.append(input).append("\n");
                 } else {
-                    list.add(StrToV.exec(input));
-
+                    Vehicle current = StrToV.exec(input);
+                    list.add(current);
+                    if (Vehicle.last_id < current.getId()) {
+                        Vehicle.last_id = current.getId();
+                    }
                 }
             }
         } else{
@@ -99,10 +103,34 @@ public final class Server {
         updateInfo();
     }
 
-    public Vehicle remove (int id) {
-        Vehicle tmp = list.remove(id-1);
-        updateInfo();
-        return tmp;
+    public Vehicle remove (int id) throws IllegalArgumentException {
+        Vehicle tmp = null;
+        boolean removed = false;
+
+        if (list.isEmpty()) {
+            throw new IllegalArgumentException("List is empty");
+        }
+
+        for (int i = 0; i < list.size(); i ++) {
+            if (list.get(i).getId() == id) {
+                tmp = list.remove(i);
+                removed =  true;
+            }
+        }
+        if (removed) {
+            updateInfo();
+            return tmp;
+        } else {
+            throw new IllegalArgumentException("No element with this id");
+        }
+    }
+
+    public void remove_first () throws IllegalArgumentException {
+        if (!list.isEmpty()) {
+            list.remove(0);
+        } else {
+            throw new IllegalArgumentException("List is empty");
+        }
     }
 
     public boolean removeByNumberOfWheels (int num) {

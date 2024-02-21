@@ -4,9 +4,8 @@ import common.StrToV;
 import common.Validator;
 import manager.Manager;
 import common.Request;
-import server.com.Vehicle;
 
-import java.lang.reflect.Field;
+import java.util.Arrays;
 import java.util.Scanner;
 
 /**
@@ -74,24 +73,22 @@ public final class Client {
             }
 
             if (response.contains(";")) {
-                Request low_req = new Request(request.getCommand());
                 StringBuilder vehicle = new StringBuilder();
-                Field[] fields = Vehicle.class.getDeclaredFields();
+
+                String[] fields = response.split(";");
                 for (int i = 0; i < fields.length; i ++) {
-                    Field field = fields[i];
-                    if (field.getName().strip().equals("last_id")) {
-                        continue;
-                    }
-                    System.out.println("Input " + field.getName());
+                    String field = fields[i];
+
+                    System.out.println("Input " + field);
                     String param = in.nextLine().strip();
-                    if (param.isEmpty()) {
-                        System.out.println("This parameter cannot be null");
-                    }
                     try {
-                        if (Validator.isValid(field.getName(), param)) {
-                            if (field.getName().equals("id")) {
+                        if (param.isEmpty()) {
+                            throw new IllegalArgumentException("This parameter cannot be null");
+                        }
+                        if (Validator.isValid(field.split("\n")[0], param)) {
+                            if (field.equals("index")) {
                                 request.setArg(Integer.parseInt(param));
-                            } else vehicle.append(param);
+                            } else vehicle.append(param).append(";");
                         }
                     } catch (IllegalArgumentException e) {
                         System.out.println(e.getMessage());

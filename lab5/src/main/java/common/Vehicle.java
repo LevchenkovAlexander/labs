@@ -1,4 +1,4 @@
-package server.com;
+package common;
 
 import java.util.Arrays;
 import java.util.Date;
@@ -8,7 +8,7 @@ import java.util.Map;
  * Class for containing vehicle
  */
 public class Vehicle implements Comparable <Vehicle>{
-    private Integer id;
+    private final Integer id;
     private String name;
     private Coordinates coordinates;
     private Date creationDate;
@@ -30,9 +30,6 @@ public class Vehicle implements Comparable <Vehicle>{
         this.fuelType = fuelType;
     }
 
-    public void setId (){
-        this.id = ++last_id;
-    }
 
     public void setName(String name) {
        this.name = name;
@@ -56,7 +53,6 @@ public class Vehicle implements Comparable <Vehicle>{
 
     public void setType(VehicleType type) {
         this.type = type;
-
     }
 
     public void setFuelType(FuelType fuelType) throws IllegalArgumentException{

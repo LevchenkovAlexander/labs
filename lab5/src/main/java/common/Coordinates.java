@@ -1,4 +1,4 @@
-package server.com;
+package common;
 
 public class Coordinates {
     int x;

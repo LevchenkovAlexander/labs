@@ -1,19 +1,16 @@
 package common;
 
-import server.com.Vehicle;
-import server.com.VehicleType;
-import server.com.FuelType;
+import static common.Vehicle.getFuelTypes;
+import static common.Vehicle.getVehicleTypes;
 
-import java.lang.reflect.Field;
 import java.util.Arrays;
 
-import static server.com.Vehicle.getFuelTypes;
-import static server.com.Vehicle.getVehicleTypes;
 
 public class Validator {
     public static boolean isValid (String field, String input) throws IllegalArgumentException {
+        System.out.println(field + " " + input);
         switch (field) {
-            case "id" -> {
+            case "index" -> {
                 if (Integer.parseInt(input) <= 0) {
                     throw new IllegalArgumentException("This ID is unavailable");
                 }
@@ -26,12 +23,19 @@ public class Validator {
                     }
                 }
             }
-            case "coordinates" -> {
+            case "coordinate_X" -> {
                 try {
-                    if (Integer.parseInt(input.split(" ")[0]) > 880) {
+                    if (Integer.parseInt(input) > 880) {
                         throw new IllegalArgumentException("Coordinate x cannot be greater than 880");
                     }
-                    Integer.parseInt(input.split(" ")[1]);
+                } catch (NumberFormatException e) {
+                    throw new IllegalArgumentException("Unsupported character for number");
+                }
+
+            }
+            case "coordinate_Y" -> {
+                try{
+                    Integer.parseInt(input);
                 } catch (NumberFormatException e) {
                     throw new IllegalArgumentException("Unsupported character for number");
                 }
@@ -57,16 +61,16 @@ public class Validator {
                     throw new IllegalArgumentException("Unsupported character for a number");
                 }
             }
-            case "type" -> {
+            case "vehicleType" -> {
                 try {
-                    VehicleType.valueOf(input);
+                    VehicleType.valueOf(input.toUpperCase());
                 } catch (IllegalArgumentException e) {
                     throw new IllegalArgumentException(input + " is not a Vehicle type");
                 }
             }
             case "fuelType" -> {
                 try {
-                    FuelType.valueOf(input);
+                    FuelType.valueOf(input.toUpperCase());
                 } catch (IllegalArgumentException e) {
                     throw new IllegalArgumentException(input + " is not a Fuel type");
                 }
@@ -76,28 +80,42 @@ public class Validator {
     }
     public static boolean isValid (Request request) throws IllegalArgumentException{
         if (request.getCommand().equals("add") || request.getCommand().equals("update") ||
-                request.getCommand().equals("insert")) {
+                request.getCommand().equals("insert") || request.getCommand().equals("add_if_min")) {
             if (request.getVehicle() == null) {
-                StringBuilder response = new StringBuilder();
-                for (Field field : Vehicle.class.getFields()) {
-                    String name = field.getName();
-                    if (!name.equals("id") && !name.equals("creationDate")) {
-
-                        switch (name) {
-                            case "coordinates" -> response.append("coordinate_X" + ";" + "coordinate_Y" + ";");
-                            case "type" ->
-                                    response.append("type/nVehicle_Types:/n").append(getVehicleTypes()).append(";");
-                            case "fuelType" ->
-                                    response.append("fuelType/nFuel_Types:/n").append(getFuelTypes()).append(";");
-                            default -> response.append(name).append(";");
-                        }
-
+            StringBuilder response = new StringBuilder();
+                for (String field : new String[]{"index", "name", "coordinates", "enginePower", "numberOfWheels", "vehicleType", "fuelType"}) {
+                    if (request.getCommand().equals("add") && field.equals("index")) {
+                        continue;
                     }
-                }
+                    switch (field) {
+                        case "coordinates" -> response.append("coordinate_X" + ";" + "coordinate_Y" + ";");
+                        case "vehicleType" ->
+                                response.append("vehicleType/nVehicle_Types:/n").append(getVehicleTypes()).append(";");
+                        case "fuelType" ->
+                                response.append("fuelType/nFuel_Types:/n").append(getFuelTypes()).append(";");
+                        default -> response.append(field).append(";");
+                    }
 
+                }
                 throw new IllegalArgumentException(response.toString());
             }
         }
+
+        if (request.getCommand().equals("execute_script")) {
+            if (request.getFileName().isEmpty()) {
+                throw new IllegalArgumentException("File name cannot be null");
+            }
+        }
+
+        if (request.getCommand().equals("remove_by_id") && request.getArg() <= 0) {
+            throw new IllegalArgumentException("This ID is unavailable");
+        }
+
+        if (request.getCommand().equals("remove_all_by_number_of_wheels") && request.getArg() <= 0) {
+            throw new IllegalArgumentException("Number of wheels must be greater than 0");
+        }
+
         return true;
     }
+
 }

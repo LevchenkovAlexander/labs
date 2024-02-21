@@ -1,14 +1,10 @@
 package common;
 
-import server.com.Vehicle;
-
 public class Request {
     String command;
     int arg;
     String fileName;
     Vehicle vehicle;
-
-    public Request () {}
 
     public Request (String request) {
         String[] s = request.split(" ");

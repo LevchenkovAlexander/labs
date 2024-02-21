@@ -1,17 +1,11 @@
 package manager;
 
-import common.Command;
 import common.Request;
 import server.*;
-import server.com.Vehicle;
 
 import java.io.*;
-import java.lang.reflect.Field;
 import java.text.DecimalFormat;
 import java.util.*;
-
-import static server.com.Vehicle.getFuelTypes;
-import static server.com.Vehicle.getVehicleTypes;
 
 /**
  * Class for establishing connection between Client and Server
@@ -180,7 +174,7 @@ public final class Manager {
 
 
             });
-            put("remove", new Command() {
+            put("remove_by_id", new Command() {
                 @Override
                 public String help() {
                     return "remove id: remove an element from a collection by its id";
@@ -188,8 +182,12 @@ public final class Manager {
 
                 @Override
                 public String execute (Request request) {
-                    s1.remove(request.getArg());
-                    return "Element removed";
+                    try{
+                        s1.remove(request.getArg());
+                        return "Element removed";
+                    } catch (IllegalArgumentException e) {
+                        return e.getMessage();
+                    }
                 }
 
             });
@@ -281,8 +279,12 @@ public final class Manager {
 
                 @Override
                 public String execute(Request request) {
-                    s1.remove(1);
-                    return "Element removed";
+                    try {
+                        s1.remove_first();
+                        return "Element removed";
+                    } catch (IllegalArgumentException e) {
+                        return e.getMessage();
+                    }
                 }
 
 

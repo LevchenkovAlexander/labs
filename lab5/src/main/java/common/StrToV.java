@@ -1,10 +1,5 @@
 package common;
 
-import server.com.Coordinates;
-import server.com.FuelType;
-import server.com.Vehicle;
-import server.com.VehicleType;
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -25,7 +20,8 @@ public class StrToV {
             }
         }
     String[] s = string.split(";");
-    return new Vehicle(++Vehicle.last_id, s[0], new Coordinates(Integer.parseInt(s[1]), Integer.parseInt(s[2])),
-            new Date(), Integer.parseInt(s[3]), Long.parseLong(s[4]), VehicleType.valueOf(s[4]), FuelType.valueOf(s[5]));
+    return new Vehicle(++Vehicle.last_id, s[0], new Coordinates(Integer.parseInt(s[1]),
+            Integer.parseInt(s[2])), new Date(), Integer.parseInt(s[3]), Long.parseLong(s[4]),
+            VehicleType.valueOf(s[5].toUpperCase()), FuelType.valueOf(s[6].toUpperCase()));
     }
 }
