@@ -4,5 +4,5 @@ public enum FuelType {
     GASOLINE,
     KEROSENE,
     ALCOHOL,
-    MANPOWER;
+    MANPOWER
 }

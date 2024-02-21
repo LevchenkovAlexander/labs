@@ -103,8 +103,7 @@ public final class Server {
         updateInfo();
     }
 
-    public Vehicle remove (int id) throws IllegalArgumentException {
-        Vehicle tmp = null;
+    public void remove (int id) throws IllegalArgumentException {
         boolean removed = false;
 
         if (list.isEmpty()) {
@@ -113,13 +112,13 @@ public final class Server {
 
         for (int i = 0; i < list.size(); i ++) {
             if (list.get(i).getId() == id) {
-                tmp = list.remove(i);
+                list.remove(i);
                 removed =  true;
+                break;
             }
         }
         if (removed) {
             updateInfo();
-            return tmp;
         } else {
             throw new IllegalArgumentException("No element with this id");
         }
