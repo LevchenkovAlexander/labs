@@ -8,7 +8,6 @@ import java.util.Arrays;
 
 public class Validator {
     public static boolean isValid (String field, String input) throws IllegalArgumentException {
-        System.out.println(field + " " + input);
         switch (field) {
             case "index" -> {
                 if (Integer.parseInt(input) <= 0) {
