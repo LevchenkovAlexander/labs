@@ -11,8 +11,9 @@ import java.util.Scanner;
  * Console application that interacts with user and sends request to Manager
  */
 public final class Client {
-    public static void main(String[] args) {
 
+    public static void main(String[] args) {
+        
 
         Manager m = new Manager();
         System.out.println("Connected");

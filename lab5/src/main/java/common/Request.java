@@ -1,5 +1,7 @@
 package common;
 
+import server.Vehicle;
+
 public class Request {
     String command;
     int arg;

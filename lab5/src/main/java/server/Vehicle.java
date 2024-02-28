@@ -1,4 +1,4 @@
-package common;
+package server;
 
 import java.util.Arrays;
 import java.util.Date;
@@ -16,7 +16,6 @@ public class Vehicle implements Comparable <Vehicle>{
     private long numberOfWheels;
     private VehicleType type;
     private FuelType fuelType;
-    public static int last_id;
 
     public Vehicle(Integer id, String name, Coordinates coordinates, Date creationDate,
                    int enginePower, long numberOfWheels, VehicleType type, FuelType fuelType) {
@@ -136,4 +135,6 @@ public class Vehicle implements Comparable <Vehicle>{
         String out = Arrays.toString(FuelType.ALCOHOL.getDeclaringClass().getEnumConstants());
         return out.substring(1, out.length()-1).replace(", ", "/n");
     }
+
+
 }

@@ -1,7 +1,6 @@
 package server;
 
 import common.StrToV;
-import common.Vehicle;
 
 import java.io.*;
 import java.util.*;
@@ -16,6 +15,7 @@ public final class Server {
     private final File collection;
     private final ArrayList<Vehicle> list = new ArrayList<>();
     private String info = "";
+    public static ArrayList<Integer> ids = new ArrayList<>();
     /**
      * Map contains name - command for interacting with user
      */
@@ -42,16 +42,19 @@ public final class Server {
                 }
                 if (input.strip().equalsIgnoreCase("collection:")) {
                     coll = true;
-                    input = scn.nextLine();
+                    if (scn.hasNextLine()) {
+                        input = scn.nextLine();
+                    } else {
+                        break;
+                    }
                 }
                 if (!coll) {
                     inf.append(input).append("\n");
                 } else {
-                    Vehicle current = StrToV.exec(input);
-                    list.add(current);
-                    if (Vehicle.last_id < current.getId()) {
-                        Vehicle.last_id = current.getId();
-                    }
+                    Vehicle tmp = StrToV.exec(input);
+                    list.add(tmp);
+                    ids.add(tmp.getId());
+
                 }
             }
         } else{
@@ -61,7 +64,9 @@ public final class Server {
     }
     public void writeFile () {
         try (BufferedWriter writer = new BufferedWriter (new FileWriter (collection))) {
+            writer.write("Information:\n");
             writer.write(info);
+            writer.write("Collection:\n");
             writer.write(listToString());
             writer.flush();
         } catch (IOException e) {
@@ -75,11 +80,13 @@ public final class Server {
 
     public void add (Vehicle element) {
         list.add(element);
+        ids.add(element.getId());
         updateInfo();
     }
 
     public void add (int id, Vehicle element) {
         list.add(id, element);
+        ids.add(id);
         updateInfo();
     }
 
@@ -93,13 +100,18 @@ public final class Server {
         }
         if (vehicle.countValue() < min) {
             add(vehicle);
+            ids.add(vehicle.getId());
             return true;
         }
         return false;
     }
 
-    public void update (int id, Vehicle element) {
+    public void update (int id, Vehicle element) throws IllegalArgumentException {
+        if (!ids.contains(id)) {
+            throw new IllegalArgumentException("No element with such id");
+        }
         list.set(id-1, element);
+        ids.add(element.getId());
         updateInfo();
     }
 
@@ -109,11 +121,17 @@ public final class Server {
         if (list.isEmpty()) {
             throw new IllegalArgumentException("List is empty");
         }
+        if (!ids.contains(id)) {
+            throw new IllegalArgumentException("No element with such id");
+        }
 
         for (int i = 0; i < list.size(); i ++) {
             if (list.get(i).getId() == id) {
+
                 list.remove(i);
                 removed =  true;
+                ids.remove((Integer) id);
+
                 break;
             }
         }
@@ -127,6 +145,7 @@ public final class Server {
     public void remove_first () throws IllegalArgumentException {
         if (!list.isEmpty()) {
             list.remove(0);
+            ids.remove((Integer) 1);
         } else {
             throw new IllegalArgumentException("List is empty");
         }
@@ -137,6 +156,7 @@ public final class Server {
         for (Vehicle vehicle : list) {
             if (vehicle.getNumberOfWheels() == num) {
                 remove(vehicle.getId());
+                ids.remove(vehicle.getId());
                 removed = true;
             }
         }
@@ -145,6 +165,7 @@ public final class Server {
 
     public void clear () {
         list.clear();
+        ids.clear();
         updateInfo();
     }
 
@@ -200,6 +221,14 @@ public final class Server {
         return listString.toString();
     }
 
-
+    public static int lastId () {
+        int lastId = 0;
+        while (true) {
+            lastId ++;
+            if (!ids.contains(lastId)) {
+                return lastId;
+            }
+        }
+    }
 
 }

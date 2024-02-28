@@ -1,6 +1,7 @@
 package manager;
 
 import common.Request;
+import common.Validator;
 import server.*;
 
 import java.io.*;
@@ -12,6 +13,7 @@ import java.util.*;
  */
 public final class Manager {
     private final Server s1;
+    private static Stack<String> scripts = new Stack<>();
     public Manager () {
         s1 = new Server();
     }
@@ -113,7 +115,11 @@ public final class Manager {
 
                 @Override
                 public String execute(Request request) {
-                    s1.update(request.getArg(), request.getVehicle());
+                    try {
+                        s1.update(request.getArg(), request.getVehicle());
+                    } catch (IllegalArgumentException e) {
+                        return e.getMessage();
+                    }
                     return "Element updated";
                 }
 
@@ -171,20 +177,37 @@ public final class Manager {
                 @Override
                 public String execute(Request request) {
 
-                    File script = new File(request.getFileName());
+
                     StringBuilder response = new StringBuilder();
+                    String fileName = request.getFileName();
                     try {
+                        File script = new File(fileName);
+                        if (scripts.contains(fileName)) {
+                            throw new IllegalArgumentException("This script is already running");
+                        } else {
+                            scripts.push(fileName);
+                        }
                         Scanner sc = new Scanner(script);
-                        StringBuilder commands_str = new StringBuilder();
+                        ArrayList<Request> commands_str = new ArrayList<>();
                         while (sc.hasNextLine()) {
-                            commands_str.append(sc.nextLine().strip());
+                            Request req = new Request(sc.nextLine().strip());
+                            if (Validator.isValid(req)) {
+                                commands_str.add(req);
+                            } else {
+                                throw new IllegalArgumentException("Script command is invalid");
+                            }
                         }
 
-                        for (String req : commands_str.toString().split("\n")) {
-                            response.append(connect(new Request(req))).append("/n");
+                        for (Request req : commands_str) {
+                            response.append(connect(req)).append("/n");
                         }
+
+                        scripts.pop();
 
                     } catch (FileNotFoundException | NullPointerException e) {
+                        if (e.getCause().getClass().equals(IllegalArgumentException.class)) {
+                            return e.getMessage();
+                        }
                         response = new StringBuilder("Error: file not found");
                     }
                     return response.toString();
@@ -296,5 +319,6 @@ public final class Manager {
         }
 
     };
+
 
 }

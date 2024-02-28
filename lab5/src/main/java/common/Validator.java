@@ -1,9 +1,14 @@
 package common;
 
-import static common.Vehicle.getFuelTypes;
-import static common.Vehicle.getVehicleTypes;
+import client.Client;
+import server.FuelType;
+import server.VehicleType;
+
+import static server.Vehicle.getFuelTypes;
+import static server.Vehicle.getVehicleTypes;
 
 import java.util.Arrays;
+import java.util.Stack;
 
 
 public class Validator {
@@ -101,6 +106,7 @@ public class Validator {
         }
 
         if (request.getCommand().equals("execute_script")) {
+
             if (request.getFileName().isEmpty()) {
                 throw new IllegalArgumentException("File name cannot be null");
             }

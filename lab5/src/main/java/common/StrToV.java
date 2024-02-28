@@ -1,5 +1,8 @@
 package common;
 
+import server.*;
+import manager.Manager;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -19,9 +22,9 @@ public class StrToV {
                 System.out.println(e.getMessage());
             }
         }
-    String[] s = string.split(";");
-    return new Vehicle(++Vehicle.last_id, s[0], new Coordinates(Integer.parseInt(s[1]),
-            Integer.parseInt(s[2])), new Date(), Integer.parseInt(s[3]), Long.parseLong(s[4]),
-            VehicleType.valueOf(s[5].toUpperCase()), FuelType.valueOf(s[6].toUpperCase()));
+        String[] s = string.split(";");
+        return new Vehicle(Server.lastId(), s[0], new Coordinates(Integer.parseInt(s[1]),
+                Integer.parseInt(s[2])), new Date(), Integer.parseInt(s[3]), Long.parseLong(s[4]),
+                VehicleType.valueOf(s[5].toUpperCase()), FuelType.valueOf(s[6].toUpperCase()));
     }
 }
