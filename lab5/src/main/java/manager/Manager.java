@@ -1,9 +1,11 @@
 package manager;
 
 import common.Request;
+import common.StrToV;
 import common.Validator;
 import server.*;
 
+import javax.swing.plaf.basic.BasicScrollBarUI;
 import java.io.*;
 import java.text.DecimalFormat;
 import java.util.*;
@@ -12,11 +14,9 @@ import java.util.*;
  * Class for establishing connection between Client and Server
  */
 public final class Manager {
-    private final Server s1;
-    private static Stack<String> scripts = new Stack<>();
-    public Manager () {
-        s1 = new Server();
-    }
+    private static final Server s1 = new Server();
+    private static final Stack<String> scripts = new Stack<>();
+    public Manager () {}
 
     /**
      * Method for connecting to Server
@@ -24,7 +24,11 @@ public final class Manager {
      * @return Server response
      */
     public String connect (Request request) {
-        return commands.get(request.getCommand()).execute(request);
+        try {
+            return commands.get(request.getCommand()).execute(request);
+        } catch (IllegalArgumentException e) {
+            return e.getMessage();
+        }
     }
 
     private final Map<String, Command> commands = new LinkedHashMap<>() {
@@ -175,42 +179,77 @@ public final class Manager {
                 }
 
                 @Override
-                public String execute(Request request) {
-
-
-                    StringBuilder response = new StringBuilder();
-                    String fileName = request.getFileName();
-                    try {
-                        File script = new File(fileName);
-                        if (scripts.contains(fileName)) {
-                            throw new IllegalArgumentException("This script is already running");
-                        } else {
-                            scripts.push(fileName);
-                        }
-                        Scanner sc = new Scanner(script);
-                        ArrayList<Request> commands_str = new ArrayList<>();
-                        while (sc.hasNextLine()) {
-                            Request req = new Request(sc.nextLine().strip());
-                            if (Validator.isValid(req)) {
-                                commands_str.add(req);
-                            } else {
-                                throw new IllegalArgumentException("Script command is invalid");
-                            }
-                        }
-
-                        for (Request req : commands_str) {
-                            response.append(connect(req)).append("/n");
-                        }
-
-                        scripts.pop();
-
-                    } catch (FileNotFoundException | NullPointerException e) {
-                        if (e.getCause().getClass().equals(IllegalArgumentException.class)) {
-                            return e.getMessage();
-                        }
-                        response = new StringBuilder("Error: file not found");
+                public String execute(Request request) throws IllegalArgumentException {
+                    if (scripts.contains(request.getFileName())) {
+                        return "Script is cycled";
                     }
-                    return response.toString();
+                    scripts.push(request.getFileName());
+                    try {
+                        Scanner scn  = new Scanner(new File(request.getFileName()));
+                        StringBuilder com = new StringBuilder();
+                        while (scn.hasNextLine()) {
+                            String str = scn.nextLine();
+                            com.append(str).append("\n");
+
+                        }
+
+                        for (String req : com.toString().split("\n")) {
+                            String res = "";
+                            Request request1 = new Request(req);
+                            try {
+                                if (Validator.isValid(request1)) {
+                                    res = new Manager().connect(request1);
+                                }
+                            } catch (IllegalArgumentException e) {
+                                res = e.getMessage();
+                            }
+                            if (res.contains("/n")) {
+                                res = res.replace("/n", "\n");
+                            }
+                            if (res.contains(";")) {
+                                boolean stopped = false;
+                                StringBuilder vehicle = new StringBuilder();
+                                Scanner in = new Scanner(System.in);
+                                String[] fields = res.split(";");
+                                for (int i = 0; i < fields.length; i ++) {
+                                    String field = fields[i];
+
+                                    System.out.println("Input " + field);
+                                    String param = in.nextLine().strip();
+                                    try {
+                                        if (param.isEmpty()) {
+                                            throw new IllegalArgumentException("This parameter cannot be null");
+                                        }
+                                        if (Validator.isValid(field.split("\n")[0], param)) {
+                                            if (field.equals("index")) {
+                                                request1.setArg(Integer.parseInt(param));
+                                            } else vehicle.append(param).append(";");
+                                        } else {
+                                            stopped = true;
+                                            break;
+                                        }
+                                    } catch (IllegalArgumentException e) {
+                                        System.out.println(e.getMessage());
+                                        i --;
+                                    }
+                                }
+                                if (stopped) {
+                                    res = "Stopped input";
+                                }
+                                else {
+                                    request1.setVehicle(StrToV.exec(vehicle.toString()));
+                                    res = new Manager().connect(request1);
+                                }
+                                in.close();
+                            }
+                            System.out.println(request1.getCommand() + "\n" + res);
+                        }
+
+                    } catch (IllegalArgumentException | FileNotFoundException e) {
+                      System.out.println(e.getMessage());
+                    }
+                    scripts.pop();
+                    return "Script " + request.getFileName() + " is finished";
                 }
 
             });

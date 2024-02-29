@@ -8,7 +8,7 @@ import java.util.Map;
  * Class for containing vehicle
  */
 public class Vehicle implements Comparable <Vehicle>{
-    private final Integer id;
+    private Integer id;
     private String name;
     private Coordinates coordinates;
     private Date creationDate;
@@ -34,6 +34,9 @@ public class Vehicle implements Comparable <Vehicle>{
        this.name = name;
     }
 
+    public void setId (Integer id) {
+        this.id = id;
+    }
     public void setCoordinates(int x, int y) {
         coordinates.setX(x);
         coordinates.setY(y);

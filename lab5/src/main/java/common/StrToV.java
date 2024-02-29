@@ -22,6 +22,10 @@ public class StrToV {
                 System.out.println(e.getMessage());
             }
         }
+
+        if (string.contains("{")) {
+            string = string.strip().substring(1, string.length()-1);
+        }
         String[] s = string.split(";");
         return new Vehicle(Server.lastId(), s[0], new Coordinates(Integer.parseInt(s[1]),
                 Integer.parseInt(s[2])), new Date(), Integer.parseInt(s[3]), Long.parseLong(s[4]),

@@ -3,6 +3,7 @@ package server;
 import common.StrToV;
 
 import java.io.*;
+import java.net.Inet4Address;
 import java.util.*;
 
 /**
@@ -15,10 +16,8 @@ public final class Server {
     private final File collection;
     private final ArrayList<Vehicle> list = new ArrayList<>();
     private String info = "";
-    public static ArrayList<Integer> ids = new ArrayList<>();
-    /**
-     * Map contains name - command for interacting with user
-     */
+
+    private static final ArrayList<Integer> idStack = new ArrayList<>();
 
 
     public Server() {
@@ -32,13 +31,21 @@ public final class Server {
         Scanner scn = new Scanner(collection);
         StringBuilder inf = new StringBuilder();
         boolean coll = false;
-
+        boolean ids = false;
         if (scn.hasNextLine()) {
             while (scn.hasNextLine()) {
                 String input = scn.nextLine();
                 if (input.strip().equalsIgnoreCase("information:")) {
                     coll = false;
                     input = scn.nextLine();
+                }
+                if (input.strip().equalsIgnoreCase("idStack:")){
+                    String stackSTR = scn.nextLine();
+                    ids = true;
+                    for (String idSTR : stackSTR.split(",")) {
+                        idStack.add(Integer.parseInt(idSTR.strip()));
+                    }
+
                 }
                 if (input.strip().equalsIgnoreCase("collection:")) {
                     coll = true;
@@ -48,13 +55,11 @@ public final class Server {
                         break;
                     }
                 }
-                if (!coll) {
+                if (!coll && !ids) {
                     inf.append(input).append("\n");
-                } else {
+                } else if (coll){
                     Vehicle tmp = StrToV.exec(input);
                     list.add(tmp);
-                    ids.add(tmp.getId());
-
                 }
             }
         } else{
@@ -66,6 +71,8 @@ public final class Server {
         try (BufferedWriter writer = new BufferedWriter (new FileWriter (collection))) {
             writer.write("Information:\n");
             writer.write(info);
+            writer.write("IdStack:\n");
+            writer.write(idStack_toString() + "\n");
             writer.write("Collection:\n");
             writer.write(listToString());
             writer.flush();
@@ -80,13 +87,12 @@ public final class Server {
 
     public void add (Vehicle element) {
         list.add(element);
-        ids.add(element.getId());
+
         updateInfo();
     }
 
     public void add (int id, Vehicle element) {
         list.add(id, element);
-        ids.add(id);
         updateInfo();
     }
 
@@ -100,18 +106,18 @@ public final class Server {
         }
         if (vehicle.countValue() < min) {
             add(vehicle);
-            ids.add(vehicle.getId());
             return true;
         }
         return false;
     }
 
     public void update (int id, Vehicle element) throws IllegalArgumentException {
-        if (!ids.contains(id)) {
+        if (idStack.contains(id)) {
             throw new IllegalArgumentException("No element with such id");
         }
+        idStack.add(element.getId());
+        element.setId(id);
         list.set(id-1, element);
-        ids.add(element.getId());
         updateInfo();
     }
 
@@ -121,7 +127,7 @@ public final class Server {
         if (list.isEmpty()) {
             throw new IllegalArgumentException("List is empty");
         }
-        if (!ids.contains(id)) {
+        if (idStack.contains(id)) {
             throw new IllegalArgumentException("No element with such id");
         }
 
@@ -130,7 +136,7 @@ public final class Server {
 
                 list.remove(i);
                 removed =  true;
-                ids.remove((Integer) id);
+                idStack.add(id);
 
                 break;
             }
@@ -144,8 +150,9 @@ public final class Server {
 
     public void remove_first () throws IllegalArgumentException {
         if (!list.isEmpty()) {
-            list.remove(0);
-            ids.remove((Integer) 1);
+
+            idStack.add(list.remove(0).getId());
+
         } else {
             throw new IllegalArgumentException("List is empty");
         }
@@ -153,19 +160,25 @@ public final class Server {
 
     public boolean removeByNumberOfWheels (int num) {
         boolean removed = false;
+
+        ArrayList<Integer> idsToRemove = new ArrayList<>();
         for (Vehicle vehicle : list) {
             if (vehicle.getNumberOfWheels() == num) {
-                remove(vehicle.getId());
-                ids.remove(vehicle.getId());
+                idsToRemove.add(vehicle.getId());
                 removed = true;
             }
         }
+        for (Integer id : idsToRemove) {
+            remove(id);
+        }
+
         return removed;
     }
 
     public void clear () {
         list.clear();
-        ids.clear();
+        idStack.clear();
+        idStack.add(1);
         updateInfo();
     }
 
@@ -222,13 +235,21 @@ public final class Server {
     }
 
     public static int lastId () {
-        int lastId = 0;
-        while (true) {
-            lastId ++;
-            if (!ids.contains(lastId)) {
-                return lastId;
-            }
+        Collections.sort(idStack);
+        int id = idStack.remove(0);
+
+        if (idStack.isEmpty()) {
+            idStack.add(id+1);
         }
+        return id;
     }
 
+    private String idStack_toString() {
+        StringBuilder str = new StringBuilder();
+        for (int id : idStack) {
+            str.append(id).append(", ");
+        }
+
+        return str.toString();
+    }
 }

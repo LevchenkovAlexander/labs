@@ -1,18 +1,22 @@
 package common;
 
-import client.Client;
 import server.FuelType;
 import server.VehicleType;
 
 import static server.Vehicle.getFuelTypes;
 import static server.Vehicle.getVehicleTypes;
 
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Stack;
+import java.util.List;
+import java.util.Scanner;
 
 
 public class Validator {
     public static boolean isValid (String field, String input) throws IllegalArgumentException {
+        if (input.equalsIgnoreCase("stop")) {
+            return false;
+        }
         switch (field) {
             case "index" -> {
                 if (Integer.parseInt(input) <= 0) {
@@ -83,14 +87,17 @@ public class Validator {
         return true;
     }
     public static boolean isValid (Request request) throws IllegalArgumentException{
-        if (request.getCommand().equals("add") || request.getCommand().equals("update") ||
-                request.getCommand().equals("insert") || request.getCommand().equals("add_if_min")) {
+        if (request.getCommand().equals("add") || request.getCommand().equals("update") || request.getCommand().equals("insert") || request.getCommand().equals("add_if_min")) {
             if (request.getVehicle() == null) {
-            StringBuilder response = new StringBuilder();
-                for (String field : new String[]{"index", "name", "coordinates", "enginePower", "numberOfWheels", "vehicleType", "fuelType"}) {
-                    if (request.getCommand().equals("add") && field.equals("index")) {
-                        continue;
-                    }
+                StringBuilder response = new StringBuilder();
+
+                ArrayList<String> fields  = new ArrayList<>(List.of(new String[]{"name", "coordinates", "enginePower", "numberOfWheels", "vehicleType", "fuelType"}));
+                if (!request.getCommand().equals("add")) {
+                    fields.add(0, "index");
+                }
+
+                for (String field : fields) {
+
                     switch (field) {
                         case "coordinates" -> response.append("coordinate_X" + ";" + "coordinate_Y" + ";");
                         case "vehicleType" ->
@@ -106,7 +113,6 @@ public class Validator {
         }
 
         if (request.getCommand().equals("execute_script")) {
-
             if (request.getFileName().isEmpty()) {
                 throw new IllegalArgumentException("File name cannot be null");
             }

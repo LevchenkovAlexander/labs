@@ -1,5 +1,13 @@
 Information:
 Type: ArrayList
 Initialization date: Fri Feb 16 19:52:16 MSK 2024
-Number of elements: 0
+Number of elements: 6
+IdStack:
+7,
 Collection:
+1, pupupu1, 100, -10, Thu Feb 29 21:54:11 MSK 2024, 400, 4, DRONE, MANPOWER
+2, pupupu2, 100, -10, Thu Feb 29 21:54:20 MSK 2024, 400, 4, DRONE, MANPOWER
+3, pupupu3, 100, -10, Thu Feb 29 21:54:23 MSK 2024, 400, 4, DRONE, MANPOWER
+4, pupupu4, 100, -10, Thu Feb 29 21:54:27 MSK 2024, 400, 4, DRONE, MANPOWER
+5, pupupu5, 100, -10, Thu Feb 29 21:54:29 MSK 2024, 400, 4, DRONE, MANPOWER
+6, pupupu6, 100, -10, Thu Feb 29 21:54:32 MSK 2024, 400, 4, DRONE, MANPOWER

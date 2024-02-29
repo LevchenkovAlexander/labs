@@ -24,6 +24,7 @@ public final class Client {
             String input = in.nextLine().strip().toLowerCase();
             String response = "";
             Request request = new Request(input);
+
             try {
                 if (Validator.isValid(request)) {
                     response = m.connect(request);
@@ -32,11 +33,13 @@ public final class Client {
                 response = e.getMessage();
             }
 
+
             if (response.contains("/n")) {
                 response = response.replace("/n", "\n");
             }
 
             if (response.contains(";")) {
+                boolean stopped = false;
                 StringBuilder vehicle = new StringBuilder();
 
                 String[] fields = response.split(";");
@@ -53,14 +56,22 @@ public final class Client {
                             if (field.equals("index")) {
                                 request.setArg(Integer.parseInt(param));
                             } else vehicle.append(param).append(";");
+                        } else {
+                            stopped = true;
+                            break;
                         }
                     } catch (IllegalArgumentException e) {
                         System.out.println(e.getMessage());
                         i --;
                     }
                 }
-                request.setVehicle(StrToV.exec(vehicle.toString()));
-                response = m.connect(request);
+                if (stopped) {
+                    response = "Stopped input";
+                }
+                else {
+                    request.setVehicle(StrToV.exec(vehicle.toString()));
+                    response = m.connect(request);
+                }
             }
 
 
