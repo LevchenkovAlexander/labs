@@ -129,7 +129,7 @@ public final class Manager {
 
 
             });
-            put("remove_by_id", new Command() {
+            put("remove", new Command() {
                 @Override
                 public String help() {
                     return "remove id: remove an element from a collection by its id";
@@ -172,10 +172,10 @@ public final class Manager {
                 }
 
             });
-            put("execute_script", new Command() {
+            put("execute", new Command() {
                 @Override
                 public String help() {
-                    return "execute_script file_name: read and execute the script from the specified file";
+                    return "execute script_file_name: read and execute the script from the specified file";
                 }
 
                 @Override

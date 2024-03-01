@@ -6,8 +6,9 @@ info
 add {pupupu;100;-10;400;4;drone;manpower}
 update 1 {pop;-12;-10;400;4;drone;manpower}
 show
-remove_by_id 1
+remove 1
 remove_first
+insert 2 {pop;23;23;22;4;drone;kerosene}
 show
 add {pup00232;100;-10;400;4;drone;manpower}
 add {pop-2;100;-10;400;4;drone;manpower}
