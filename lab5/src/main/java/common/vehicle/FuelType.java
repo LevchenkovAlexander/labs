@@ -1,4 +1,4 @@
-package server;
+package common.vehicle;
 
 public enum FuelType {
     GASOLINE,

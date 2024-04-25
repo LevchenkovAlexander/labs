@@ -1,9 +1,9 @@
 package server;
 
-import common.StrToV;
+import common.vehicle.StrToV;
+import common.vehicle.Vehicle;
 
 import java.io.*;
-import java.net.Inet4Address;
 import java.util.*;
 
 /**
@@ -12,7 +12,7 @@ import java.util.*;
  * @author LevchenkovAlexander
  */
 
-public final class Server {
+public final class CollectionManager {
     private final File collection;
     private final ArrayList<Vehicle> list = new ArrayList<>();
     private String info = "";
@@ -20,7 +20,7 @@ public final class Server {
     private static final ArrayList<Integer> idStack = new ArrayList<>();
 
 
-    public Server() {
+    public CollectionManager() {
         collection = new File(System.getenv("CollectionPath"));
         try {
             readFile();
@@ -42,7 +42,7 @@ public final class Server {
                 if (input.strip().equalsIgnoreCase("idStack:")){
                     String stackSTR = scn.nextLine();
                     ids = true;
-                    for (String idSTR : stackSTR.split(",")) {
+                    for (String idSTR : stackSTR.strip().split(",")) {
                         idStack.add(Integer.parseInt(idSTR.strip()));
                     }
 
@@ -197,7 +197,7 @@ public final class Server {
 
         Collections.sort(vehicles);
         for (Vehicle veh : vehicles) {
-            str.append(veh.getFuelType().toString()).append("/n");
+            str.append(veh.getFuelType().toString()).append("\n");
         }
         return str.toString();
     }

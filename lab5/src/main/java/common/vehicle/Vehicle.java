@@ -1,5 +1,6 @@
-package server;
+package common.vehicle;
 
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Map;
@@ -7,15 +8,16 @@ import java.util.Map;
 /**
  * Class for containing vehicle
  */
-public class Vehicle implements Comparable <Vehicle>{
+public class Vehicle implements Comparable  <Vehicle>, Serializable {
     private Integer id;
     private String name;
-    private Coordinates coordinates;
+    private final Coordinates coordinates;
     private Date creationDate;
     private int enginePower;
     private long numberOfWheels;
     private VehicleType type;
     private FuelType fuelType;
+
 
     public Vehicle(Integer id, String name, Coordinates coordinates, Date creationDate,
                    int enginePower, long numberOfWheels, VehicleType type, FuelType fuelType) {

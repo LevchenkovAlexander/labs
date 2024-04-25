@@ -1,11 +1,18 @@
 package common;
 
-import server.Vehicle;
+
+import common.vehicle.StrToV;
+import common.vehicle.Vehicle;
+
+import java.io.Serial;
+import java.io.Serializable;
+import java.nio.charset.StandardCharsets;
 
 public class Request {
+    
     String command;
-    int arg;
-    String fileName;
+    int arg = -1;
+    String fileName = "";
     Vehicle vehicle;
 
     public Request (String request) {
@@ -55,5 +62,34 @@ public class Request {
 
     public void setVehicle(Vehicle vehicle) {
         this.vehicle = vehicle;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder str = new StringBuilder(command);
+        if (arg != -1) {
+            str.append(arg);
+        }
+        if (fileName != null) {
+            str.append(fileName);
+        }
+        if (vehicle != null) {
+            str.append(vehicle.toString());
+        }
+        return str.toString();
+    }
+
+    public byte[] export() {
+        StringBuilder str = new StringBuilder(command);
+        if (arg != -1) {
+            str.append(arg);
+        }
+        if (fileName != null) {
+            str.append(fileName);
+        }
+        if (vehicle != null) {
+            str.append(vehicle.toString());
+        }
+        return str.toString().getBytes(StandardCharsets.UTF_8);
     }
 }
